@@ -34,9 +34,11 @@ class Websocket:
                         'Action': ['execute-api:ManageConnections'],
                         'Resource': self.api_arn}]}))
             policy.attach_role(RoleName=lambda_role_name)
+            logger.info("Lambda role %s policy created", policy.policy_name)
         except ClientError:
             if policy is not None:
                 policy.delete()
+            logger.exception("Lambda role %s exception", lambda_role_name)
             raise
 
     def remove_perms(self):
