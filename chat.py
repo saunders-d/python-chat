@@ -41,8 +41,12 @@ class Websocket:
             logger.exception("Lambda role %s exception", lambda_role_name)
             raise
 
-    def remove_perms(self):
-        return
+    def remove_perms(self, lambda_role):
+        policy_name = f'{lambda_role.name}-{self.permission_policy_suffix}'
+        for policy in lambda_role.attached_policies.all():
+            if policy.policy_name == policy_name:
+                lambda_role.detach_policy(PolicyArn=policy.arn)
+                policy.delete()
 
     def deploy_api(self):
         return
